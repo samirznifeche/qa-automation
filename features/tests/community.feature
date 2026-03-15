@@ -5,5 +5,5 @@ Feature: Tests for Community feature
     When Login to the page with valid credentials: "**********" and "**********"
     And Click on Settings option
     And Click on Community option
-    Then Verify the right page opens
+    Then Verify Community page opens
     And Verify the “Contact support” button is available and clickable

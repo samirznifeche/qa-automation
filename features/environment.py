@@ -1,5 +1,6 @@
 from app.application import Application
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.wait import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
@@ -12,6 +13,11 @@ def browser_init(context):
     driver_path = ChromeDriverManager().install()
     service = Service(driver_path)
     context.driver = webdriver.Chrome(service=service)
+
+    chrome_options = Options()
+    prefs = {"profile.default_content_setting_values.notifications": 2}
+    chrome_options.add_experimental_option("prefs", prefs)
+    context.driver = webdriver.Chrome(options=chrome_options)
 
     context.driver.maximize_window()
     context.driver.implicitly_wait(4)

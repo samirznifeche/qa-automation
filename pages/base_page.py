@@ -13,11 +13,23 @@ class Page:
         url = f"{self.base_url}{end_url}"
         self.driver.get(url)
 
+    def find_element(self, *locator):
+        return self.driver.find_element(*locator)
+
+    def find_elements(self, *locator):
+        return self.driver.find_elements(*locator)
+
     def input_text(self, text, *locator):
         self.driver.find_element(*locator).send_keys(text)
 
     def click(self, *locator):
         self.driver.find_element(*locator).click()
+
+    def scroll_to_element(self, *locator):
+        element = self.driver.wait.until(
+            EC.presence_of_element_located(locator)
+        )
+        self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
 
     def wait_until_clickable(self, *locator):
         self.driver.wait.until(
