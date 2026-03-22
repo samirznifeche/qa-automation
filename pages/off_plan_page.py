@@ -4,25 +4,33 @@ from time import sleep
 
 
 class OffPlanPage(Page):
-    FILTERS_BTN = (By.CSS_SELECTOR, ".hidden [data-test-id='search-and-filters-button']")
-    ANNOUNCED_STATUS = (By.CSS_SELECTOR, "[data-test-id='filter-badge-announced']")
+    SEARCH_AND_FILTERS_BTN = (By.CSS_SELECTOR, ".hidden [data-test-id='search-and-filters-button']")
     SUBMIT_BTN = (By.CSS_SELECTOR, "[data-test-id='all-filters-submit']")
     PROJECT_CARDS = (By.CSS_SELECTOR, "[href*='projects']")
+
+    def get_status_locator(self, status):
+        formatted = status.lower().replace(' ','_')
+        return (By.CSS_SELECTOR, f"[data-test-id='filter-badge-{formatted}']")
 
     def verify_off_plan_opens(self):
         self.verify_partial_url('find')
 
-    def filter_by_announced(self):
-        self.wait_until_clickable_click(*self.FILTERS_BTN)
-        self.scroll_to_element(*self.ANNOUNCED_STATUS)
-        self.wait_until_clickable_click(*self.ANNOUNCED_STATUS)
+    def filter_by_status(self, status):
+        self.wait_until_clickable_click(*self.SEARCH_AND_FILTERS_BTN)
+
+        locator = self.get_status_locator(status)
+        self.scroll_to_element(*locator)
+        sleep(1)
+        self.wait_until_clickable_click(*locator)
+        sleep(1)
+
         self.wait_until_clickable_click(*self.SUBMIT_BTN)
 
-    def verify_announced_badge(self):
+    def verify_product_status(self, status):
         project_cards = self.driver.find_elements(*self.PROJECT_CARDS)
 
         assert project_cards, "No project cards found after filtering"
 
         for index, card in enumerate(project_cards, start=1):
-            statuses = card.find_elements(By.CSS_SELECTOR, "[data-test-id='project-card-sale-status']")
-            assert statuses, f"Card #{index} does not contain 'Announced' status"
+            statuses = card.find_element(By.XPATH, f"//*[text()='{status}']")
+            assert statuses, f"Card #{index} does not contain '{status}' status"

@@ -5,10 +5,10 @@ from behave import given, when, then
 def verify_off_plan_opens(context):
     context.app.off_plan_page.verify_off_plan_opens()
 
-@when('Filter by sale status of "Announced"')
-def filter_by_announced(context):
-    context.app.off_plan_page.filter_by_announced()
+@when('Filter by sales status of "{status}"')
+def filter_by_status(context, status):
+    context.app.off_plan_page.filter_by_status(status)
 
-@then('Verify each product has "Announced"')
-def verify_announced_badge(context):
-    context.app.off_plan_page.verify_announced_badge()
+@then('Verify each product has "{status}"')
+def verify_product_status(context, status):
+    context.app.off_plan_page.verify_product_status(status)
